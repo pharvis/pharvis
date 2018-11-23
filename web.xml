@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+    <dependencies>
+        <name path="/var/somethinf">vis-core.phar</name>
+        <name path="/var/somethinf">vis-mvc.phar</name>
+    </dependencies>
+    
+    <routing>
+        
+        <route>
+            <class>Core.Mvc.ControllerDispacher</class>
+            <urls>
+                <urlPattern>/{controller}/{action}</urlPattern>
+            </urls>
+        </route>
+
+        <!--
+        <route>
+            <class>app.Home</class>
+            <urls>
+                <urlPattern>/{controller}/product-{product_id}/{id}.html</urlPattern>
+                <urlPattern>/{controller}/product-{product_id}.html</urlPattern>
+            </urls>
+        </route>
+        !-->
+    </routing>
+    
+    <errorHandlers>
+        <handler>
+            <exception>*</exception>
+            <class>Core.Web.Http.ExceptionHandler</class>
+        </handler>
+    </errorHandlers>
+</app>
