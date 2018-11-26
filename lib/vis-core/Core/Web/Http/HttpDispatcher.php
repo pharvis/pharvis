@@ -2,7 +2,7 @@
 
 namespace Core\Web\Http;
 
-abstract class HttpDispacher implements IGenericDispacher{
+abstract class HttpDispatcher implements IGenericDispatcher{
     
     public function get(HttpContext $httpContext){}
 

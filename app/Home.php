@@ -3,13 +3,18 @@
 namespace app;
 
 use Core\Web\Http\HttpContext;
-use Core\Web\Http\HttpDispacher;
+use Core\Web\Http\HttpDispatcher;
 use Core\Web\View\NativeView;
 
-class Home extends HttpDispacher{
+/**
+ * @Core.Web.Annotations.HttpScheme("http")
+ * @Core.Web.Annotations.HttpScheme("http")                
+ */
+class Home extends HttpDispatcher{
     
-    public function get(HttpContext $httpContext){ print_R($httpContext->getRequest()); exit;
+    public function get(HttpContext $httpContext){ //print_R($httpContext->getRequest()); exit;
 
+        print "Hii";
         $view1 = new NativeView();
         $view1->setPath('/var/www/parvus/app/views/shared/main.php');
         

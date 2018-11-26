@@ -36,4 +36,8 @@ final class Request{
     public function addParameter(string $name, string $value){
         $this->parameter->add($name, $value);
     }
+    
+    public function getServer() : Server{
+        return $this->server;
+    }
 }

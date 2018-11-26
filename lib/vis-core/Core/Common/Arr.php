@@ -36,9 +36,22 @@ class Arr implements \ArrayAccess, \IteratorAggregate{
     public function exists(string $key) : bool{
         return array_key_exists($key, $this->collection);
     }
+
+    public function count(){
+        return count($this->collection);
+    }
     
     public function toArray(){
         return $this->collection;
+    }
+    
+    public function toStringGenerator(){
+        
+        foreach($this->collection as $item){
+            if(is_String($item)){
+                yield new Str($item);
+            }
+        }
     }
 
     public function offsetExists($offset) : bool{

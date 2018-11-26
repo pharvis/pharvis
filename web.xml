@@ -8,9 +8,9 @@
     <routing>
         
         <route>
-            <class>Core.Mvc.ControllerDispacher</class>
+            <class>app.Home</class>
             <urls>
-                <urlPattern>/{controller}/{action}</urlPattern>
+                <urlPattern>/</urlPattern>
             </urls>
         </route>
 
@@ -28,7 +28,7 @@
     <errorHandlers>
         <handler>
             <exception>*</exception>
-            <class>Core.Web.Http.ExceptionHandler</class>
+            <class>Core.Web.Http.ExceptionDispatcher</class>
         </handler>
     </errorHandlers>
 </app>

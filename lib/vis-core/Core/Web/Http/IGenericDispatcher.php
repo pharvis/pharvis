@@ -2,7 +2,7 @@
 
 namespace Core\Web\Http;
 
-interface IGenericDispacher{
+interface IGenericDispatcher{
     
     public function service(HttpContext $httpContext);
 }

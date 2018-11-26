@@ -69,6 +69,18 @@ final class Str{
         return new Arr(preg_split('@'.$pattern.'@', $this->string, $limit, $flags));
     }
     
+    public function equals(string $string) : bool{
+        if(strcmp($this->string, $string) === 0){
+            return true;
+        }
+        return false;
+    }
+    
+    public function startsWith(string $string){
+        $len = mb_strlen($string, $this->encoding);
+        return mb_substr($this->string, 0, $len, $this->encoding) == $string ? true : false;
+    }
+
     public function getEncoding(){
         return $this->encoding;
     }
@@ -83,5 +95,9 @@ final class Str{
     
     private function _trim($function, $charmask = null){
         return $function($this->string, ((null == $charmask) ? " \t\n\r\0\x0B" : " \t\n\r\0\x0B" . $charmask));
+    }
+    
+    public static function set(string $string){
+        return new Str($string);
     }
 }

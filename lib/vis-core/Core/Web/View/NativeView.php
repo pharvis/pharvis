@@ -34,7 +34,7 @@ class NativeView implements IView{
 
     public function render(array $params = []){
         extract($params);
-
+        $output = '';
         if(is_file($this->path)){
             ob_start();
             include $this->path;

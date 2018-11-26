@@ -3,11 +3,14 @@
 namespace Core\Web;
 
 use Core\Common\Obj;
+use Core\Web\Annotations\Constraint;
 use Core\Web\Http\Server;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
 use Core\Web\Http\HttpContext;
-use Core\Web\Http\IGenericDispacher;
+use Core\Web\Http\IGenericDispatcher;
+use Core\Web\Http\HttpException;
+use Core\Web\Http\HttpConstraintException;
 
 final class Application{
     
@@ -32,27 +35,40 @@ final class Application{
             if($route->execute($this->request)){
                 $class = $route->getDispatcherClass();
                 
-                $instance = Obj::create($class)->get();
-                
-                if($instance instanceof IGenericDispacher){
-                    $instance->service($this->httpContext);
+                $dispatcher = Obj::create($class)->get();
+
+                if($dispatcher instanceof IGenericDispatcher){
+
+                    $annotations = Obj::from($dispatcher)->getClassAnnotations();
+
+                    foreach($annotations as $annotation) {
+                        $annotationInstance = Obj::create($annotation->getClassName(), $annotation->getParameters())->get();
+
+                        if($annotationInstance instanceof Constraint){
+                            if(false === $annotationInstance->execute($this->httpContext)){
+                                throw new HttpConstraintException(sprintf("Protocol scheme '%s' is not supported.", $this->httpContext->getRequest()->getServer()->get('REQUEST_SCHEME')));
+                            }
+                        }
+                    }
+                    
+                    $dispatcher->service($this->httpContext);
                     break;
                 }else{
-                    throw new \RuntimeException("$class must be an instance of IGenericDispacher");
+                    throw new HttpException("$class must be an instance of IGenericDispatcher");
                 }
             }
         }
     }
     
-    public function error(\Exception $e){ 
+    public function error(\Exception $e){
         $exceptionType = get_class($e);
         
         foreach($this->config->getErrorHandlers() as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
                 $instance = Obj::create($handler->class)->get();
-                
-                if($instance instanceof IGenericDispacher){
+
+                if($instance instanceof IGenericDispatcher){
                     $this->httpContext->getRequest()->setException($e);
                     $instance->service($this->httpContext);
                     break;
