@@ -9,16 +9,16 @@ class Route{
 
     protected $urlPattern;
     protected $routeHandler;
-    protected $dispatcherClass;
+    protected $serviceClass;
     
-    public function __construct(string $urlPattern, string $routeHandler, string $dispatcherClass){
+    public function __construct(string $urlPattern, string $routeHandler, string $serviceClass){
         $this->urlPattern = $urlPattern;
         $this->routeHandler =  Obj::create($routeHandler)->get();
-        $this->dispatcherClass = $dispatcherClass;
+        $this->serviceClass = $serviceClass;
     }
     
-    public function getDispatcherClass() : string{
-        return $this->dispatcherClass;
+    public function getServiceClass() : string{
+        return $this->serviceClass;
     }
 
     public function execute(Request $request){

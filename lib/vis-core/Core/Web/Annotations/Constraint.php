@@ -2,7 +2,17 @@
 
 namespace Core\Web\Annotations;
 
-interface Constraint{
+abstract class Constraint{
     
-    public function execute(\Core\Web\Http\HttpContext $httpContext) : bool;
+    private $errMessage = '';
+
+    public function setErrMessage(string $string){
+        $this->errMessage = $string;
+    }
+    
+    public function getErrMessage() : string{
+        return $this->errMessage;
+    }
+    
+    public abstract function execute(\Core\Web\Http\HttpContext $httpContext) : bool;
 }

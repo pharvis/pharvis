@@ -8,7 +8,7 @@ use Core\Web\Http\Server;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
 use Core\Web\Http\HttpContext;
-use Core\Web\Http\IGenericDispatcher;
+use Core\Web\Http\GenericService;
 use Core\Web\Http\HttpException;
 use Core\Web\Http\HttpConstraintException;
 
@@ -21,60 +21,61 @@ final class Application{
     private $request = null;
     private $response = null;
 
-    public function __construct(string $baseDir, Configuration $config){
+    public function run(string $baseDir, Configuration $config){ 
+        
         $this->baseDir = $baseDir;
         $this->config = $config;
         $this->server = new Server();
         $this->request = new Request($this->server);
         $this->response = new Response($this->server);
         $this->httpContext = new HttpContext($this->request, $this->response);
-    }
-    
-    public function run(){ 
+        
         foreach($this->config->getRoutes() as $route){
             if($route->execute($this->request)){
-                $class = $route->getDispatcherClass();
+                $class = $route->getServiceClass();
                 
-                $dispatcher = Obj::create($class)->get();
+                $service = Obj::create($class, [$this->config])->get();
 
-                if($dispatcher instanceof IGenericDispatcher){
-
-                    $annotations = Obj::from($dispatcher)->getClassAnnotations();
-
-                    foreach($annotations as $annotation) {
-                        $annotationInstance = Obj::create($annotation->getClassName(), $annotation->getParameters())->get();
-
-                        if($annotationInstance instanceof Constraint){
-                            if(false === $annotationInstance->execute($this->httpContext)){
-                                throw new HttpConstraintException(sprintf("Protocol scheme '%s' is not supported.", $this->httpContext->getRequest()->getServer()->get('REQUEST_SCHEME')));
-                            }
-                        }
-                    }
-                    
-                    $dispatcher->service($this->httpContext);
+                if($service instanceof GenericService){
+                    $this->dispatch($service);
                     break;
                 }else{
-                    throw new HttpException("$class must be an instance of IGenericDispatcher");
+                    throw new HttpException("$class must be an instance of GenericService");
                 }
             }
         }
     }
     
-    public function error(\Exception $e){
+    public function error(\Exception $e){ print_R($e); exit;
         $exceptionType = get_class($e);
         
         foreach($this->config->getErrorHandlers() as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
-                $instance = Obj::create($handler->class)->get();
+                $service = Obj::create($handler->class, [$this->config])->get();
 
-                if($instance instanceof IGenericDispatcher){
+                if($service instanceof GenericService){
                     $this->httpContext->getRequest()->setException($e);
-                    $instance->service($this->httpContext);
+                    $this->dispatch($service);
                     break;
                 }
             }
         }
+    }
+    
+    protected function dispatch(GenericService $service){
+        $annotations = Obj::from($service)->getClassAnnotations();
+
+        foreach($annotations as $annotation) {
+            $annotationInstance = Obj::create($annotation->getClassName(), $annotation->getParameters())->get();
+
+            if($annotationInstance instanceof Constraint){
+                if(false === $annotationInstance->execute($this->httpContext)){
+                    throw new HttpConstraintException($annotationInstance->getErrMessage());
+                }
+            }
+        }
+        $service->service($this->httpContext);
     }
 }
 

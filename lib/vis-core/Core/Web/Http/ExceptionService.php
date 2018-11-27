@@ -2,7 +2,7 @@
 
 namespace Core\Web\Http;
 
-class ExceptionDispatcher extends HttpDispatcher{
+class ExceptionService extends HttpService{
     
     public function get(HttpContext $httpContext){
         $this->handleRequest($httpContext);

@@ -30,9 +30,10 @@ if(isset($xml->dependencies->name)){
         include $baseDir . '/lib/' . (string)$dependency;
     }
 }
-$app = new \Core\Web\Application($baseDir, new \Core\Web\Configuration($xml));
+
+$app = new \Core\Web\Application();
 try{
-    $app->run();
+    $app->run($baseDir, new \Core\Web\Configuration($xml));
 }catch(\Exception $e){
     $app->error($e);
 }
