@@ -21,10 +21,10 @@ final class Application{
     private $request = null;
     private $response = null;
 
-    public function run(string $baseDir, Configuration $config){ 
+    public function run(string $baseDir, \Core\Configuration\ConfigurationReader $configReader){
         
         $this->baseDir = $baseDir;
-        $this->config = $config;
+        $this->config = $configReader->getConfiguration();
         $this->server = new Server();
         $this->request = new Request($this->server);
         $this->response = new Response($this->server);

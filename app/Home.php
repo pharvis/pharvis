@@ -14,7 +14,9 @@ class Home extends HttpService{
     
     public function get(HttpContext $httpContext){ //print_R($httpContext->getRequest()); exit;
 
-        print_R($this->getSettings()); exit;
+        //print_R($this->getSettings()->db3->host); exit;
+        
+        print_R($this->c); exit;
         $view1 = new NativeView();
         $view1->setPath('/var/www/parvus/app/views/shared/main.php');
         

@@ -41,8 +41,34 @@ class Arr implements \ArrayAccess, \IteratorAggregate{
         return count($this->collection);
     }
     
+    public function path(string $path = ''){
+        $tmp = $this->collection;
+        if($path){
+            $segments = array_map(function($value){ return trim($value); }, explode('.', trim($path, ' .')));
+
+            foreach($segments as $segment){
+                if(is_array($tmp)){
+                    $tmp = $tmp[$segment];
+                }
+            }
+        }
+        return $tmp;
+    }
+
     public function toArray(){
         return $this->collection;
+    }
+    
+    public function toObject(){
+        return json_decode(json_encode($this->collection));
+    }
+    
+    public function toJson(){
+        return json_encode($this->collection);
+    }
+    
+    public function serialize(){
+        return serialize($this->collection);
     }
     
     public function toStringGenerator(){

@@ -2,8 +2,7 @@
 
 namespace Core\Web\Http;
 
-use Core\Web\Configuration;
-use Core\Service\ServiceContainer;
+use Core\Configuration\Configuration;
 
 abstract class GenericService{
     
@@ -13,17 +12,10 @@ abstract class GenericService{
         $this->config = $config;
     }
     
-    public function getSettings(string $path = ''){
-        return $this->config->getSettings($path);
-    }
-    
-    public function getServiceContainer() : ServiceContainer{
-        return $this->config->getServiceContainer();
+    public function getConfiguration(){
+        return $this->config;
     }
 
     public abstract function service(HttpContext $httpContext);
     
-    public function __get($name) {
-        return $this->config->getServiceContainer()->get($name);
-    }
 }

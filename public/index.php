@@ -33,7 +33,8 @@ if(isset($xml->dependencies->name)){
 
 $app = new \Core\Web\Application();
 try{
-    $app->run($baseDir, new \Core\Web\Configuration($xml));
+    $app->run($baseDir, new \Core\Configuration\ConfigurationReader($xml));
+    //$app->run($baseDir, new \Core\Web\Configuration($xml));
 }catch(\Exception $e){
     $app->error($e);
 }

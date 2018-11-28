@@ -4,6 +4,14 @@ namespace Core\Web\Http;
 
 abstract class HttpService extends GenericService{
     
+    public function getSettings() {
+        return $this->getConfiguration()->getSettings()->toObject();
+    }
+    
+    public function getServiceContainer() {
+        return $this->getConfiguration()->getServiceContainer();
+    }
+    
     public function get(HttpContext $httpContext){}
 
     public function post(HttpContext $httpContext){}
@@ -43,5 +51,9 @@ abstract class HttpService extends GenericService{
                 $this->head($httpContext);
                 break;
         }
+    }
+    
+    public function __get($name) {
+        return $this->getConfiguration()->getServiceContainer()->get($name);
     }
 }
