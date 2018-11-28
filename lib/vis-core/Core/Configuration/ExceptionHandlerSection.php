@@ -4,7 +4,7 @@ namespace Core\Configuration;
 
 class ExceptionHandlerSection extends ConfigurationSection{
     
-    public function execute($xml){
+    public function execute(\SimpleXMLElement $xml){
 
         $exceptionHandlers = [];
         

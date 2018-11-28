@@ -2,7 +2,7 @@
 
 namespace Core\Configuration;
 
-class ConfigurationReader{
+class ConfigurationManager{
     
     private $configuration = null;
     

@@ -3,6 +3,7 @@
 namespace Core\Web;
 
 use Core\Common\Obj;
+use Core\Configuration\ConfigurationManager;
 use Core\Web\Annotations\Constraint;
 use Core\Web\Http\Server;
 use Core\Web\Http\Request;
@@ -21,7 +22,7 @@ final class Application{
     private $request = null;
     private $response = null;
 
-    public function run(string $baseDir, \Core\Configuration\ConfigurationReader $configReader){
+    public function run(string $baseDir, ConfigurationManager $configReader){
         
         $this->baseDir = $baseDir;
         $this->config = $configReader->getConfiguration();

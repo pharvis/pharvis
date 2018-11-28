@@ -6,7 +6,7 @@ class SettingsSection extends ConfigurationSection{
     
     private $settings = [];
     
-    public function execute($xml){
+    public function execute(\SimpleXMLElement $xml){
         $this->loadSettings($xml->settings);
         $this->addSection('settings', new \Core\Common\Arr($this->settings));
     }

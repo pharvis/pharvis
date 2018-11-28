@@ -6,7 +6,7 @@ use Core\Web\Routing\Route;
 
 class RouteSection extends ConfigurationSection{
     
-    public function execute($xml){
+    public function execute(\SimpleXMLElement $xml){
         $routes = [];
         
         foreach($xml->xpath('//urlPattern') as $urlPattern){

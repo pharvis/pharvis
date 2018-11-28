@@ -8,7 +8,7 @@ use Core\Service\Argument;
 
 class ServiceContainerSection extends ConfigurationSection{
     
-    public function execute($xml){
+    public function execute(\SimpleXMLElement $xml){
         
         $serviceContainer = new ServiceContainer();
         
