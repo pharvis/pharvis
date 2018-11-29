@@ -65,6 +65,18 @@ final class Str{
         return $this;
     }
     
+    public function replace($replace, string $replacement){
+        $this->string = str_replace($replace, $replacement, $this->string);
+        return $this;
+    }
+    
+    public function replaceTokens(array $replace){
+        foreach($replace as $key => $string){ 
+            $this->string = str_replace('{' . $key . '}', $string, $this->string);
+        }
+        return $this;
+    }
+
     public function split(string $pattern, int $limit = null, int $flags = PREG_SPLIT_NO_EMPTY){
         return new Arr(preg_split('@'.$pattern.'@', $this->string, $limit, $flags));
     }

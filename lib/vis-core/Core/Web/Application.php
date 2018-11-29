@@ -3,6 +3,7 @@
 namespace Core\Web;
 
 use Core\Common\Obj;
+use Core\Common\Str;
 use Core\Configuration\ConfigurationManager;
 use Core\Web\Annotations\Constraint;
 use Core\Web\Http\Server;
@@ -11,46 +12,50 @@ use Core\Web\Http\Response;
 use Core\Web\Http\HttpContext;
 use Core\Web\Http\GenericService;
 use Core\Web\Http\HttpException;
+use Core\Web\Http\ServiceNotFoundException;
 use Core\Web\Http\HttpConstraintException;
 
 final class Application{
     
-    private $baseDir = '';
     private $config = null;
     private $httpContext = null;
-    private $server = null;
-    private $request = null;
-    private $response = null;
 
     public function run(string $baseDir, ConfigurationManager $configReader){
         
-        $this->baseDir = $baseDir;
         $this->config = $configReader->getConfiguration();
-        $this->server = new Server();
-        $this->request = new Request($this->server);
-        $this->response = new Response($this->server);
-        $this->httpContext = new HttpContext($this->request, $this->response);
+        $server = new Server($baseDir);
+        $request = new Request($server);
+        $response = new Response($server);
+        $this->httpContext = new HttpContext($request, $response);
         
         foreach($this->config->getRoutes() as $route){
-            if($route->execute($this->request)){
-                $class = $route->getServiceClass();
-                
-                $service = Obj::create($class, [$this->config])->get();
+            if($route->execute($request)){
+                $class = (string)Str::set($route->getServiceClass())->replaceTokens(
+                    $request->getParameters()
+                    ->map(function($v){ return (string)Str::set($v)->toUpperFirst(); })
+                    ->toArray()
+                )->replace('.', '\\');
+                    
+                if(Obj::exists($class)){
+                    $service = new $class($this->config);
+                }else{
+                    throw new ServiceNotFoundException($response, 404, "the service controller not found");
+                }
 
                 if($service instanceof GenericService){
                     $this->dispatch($service);
                     break;
                 }else{
-                    throw new HttpException("$class must be an instance of GenericService");
+                    throw new HttpException($response, 500, "$class must be an instance of GenericService");
                 }
             }
         }
     }
     
-    public function error(\Exception $e){ print_R($e); exit;
+    public function error(\Exception $e){
         $exceptionType = get_class($e);
-        
-        foreach($this->config->getErrorHandlers() as $handler){
+
+        foreach($this->config->getExceptionHandlers() as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
                 $service = Obj::create($handler->class, [$this->config])->get();
@@ -77,6 +82,7 @@ final class Application{
             }
         }
         $service->service($this->httpContext);
+        $this->httpContext->getResponse()->flush();
     }
 }
 

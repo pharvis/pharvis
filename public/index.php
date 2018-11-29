@@ -1,6 +1,6 @@
 <?php
 
-$baseDir = dirname(__DIR__);
+$baseDir = str_replace('\\', '/', dirname(__DIR__));
 
 $p = new Phar($baseDir . '/lib/vis-core.phar');
 $p->buildFromDirectory($baseDir . '/lib/vis-core');

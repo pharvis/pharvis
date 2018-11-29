@@ -23,6 +23,12 @@ final class Configuration{
             return $this->get('serviceContainer');
         }
     }
+    
+    public function getExceptionHandlers(){
+        if($this->exists('exceptionHandlers')){
+            return $this->get('exceptionHandlers');
+        }
+    }
 
     public function add($name, $value){
         if(false === array_key_exists($name, $this->collection)){

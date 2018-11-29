@@ -21,6 +21,12 @@ class Arr implements \ArrayAccess, \IteratorAggregate{
     
     public function add(string $key, $value){
         $this->collection[$key] = $value;
+        return $this;
+    }
+    
+    public function addIndex($value){
+        $this->collection[] = $value;
+        return $this;
     }
     
     public function merge($array){
@@ -31,6 +37,7 @@ class Arr implements \ArrayAccess, \IteratorAggregate{
             throw new \InvalidArgumentException(sprintf('Argument 1 passed to %1$s::merge() must be of type array or an instance of %1$s, %2$s given.', get_class($this), gettype($array)));
         }
         $this->collection = array_merge($this->collection, $array);
+        return $this;
     }
     
     public function exists(string $key) : bool{
@@ -53,6 +60,11 @@ class Arr implements \ArrayAccess, \IteratorAggregate{
             }
         }
         return $tmp;
+    }
+    
+    public function map(callable $function){
+        $this->collection = array_map($function, $this->collection);
+        return $this;
     }
 
     public function toArray(){
