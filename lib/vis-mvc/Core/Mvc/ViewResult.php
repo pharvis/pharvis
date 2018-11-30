@@ -24,7 +24,7 @@ class ViewResult implements IActionResult{
             ->map(function($v){ return (string)Str::set($v)->toUpperFirst(); })
             ->toArray()
         );
-            return $this->path . $path;
+            return $path;
         //print $path; exit;
     }
 }

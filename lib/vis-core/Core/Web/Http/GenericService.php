@@ -2,18 +2,18 @@
 
 namespace Core\Web\Http;
 
-use Core\Configuration\Configuration;
+use Core\Configuration\ConfigurationManager;
 
 abstract class GenericService{
     
-    private $config = null;
+    private $configManager = null;
     
-    public function __construct(Configuration $config){
-        $this->config = $config;
+    public function __construct(ConfigurationManager $configManager){
+        $this->configManager = $configManager;
     }
     
     public function getConfiguration(){
-        return $this->config;
+        return $this->configManager->getConfiguration();
     }
     
     public abstract function service(HttpContext $httpContext);

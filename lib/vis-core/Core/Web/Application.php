@@ -17,18 +17,18 @@ use Core\Web\Http\HttpConstraintException;
 
 final class Application{
     
-    private $config = null;
+    private $configManager = null;
     private $httpContext = null;
 
-    public function run(string $baseDir, ConfigurationManager $configReader){
+    public function run(string $baseDir, ConfigurationManager $configManager){
         
-        $this->config = $configReader->getConfiguration();
+        $this->configManager = $configManager;
         $server = new Server($baseDir);
         $request = new Request($server);
         $response = new Response($server);
         $this->httpContext = new HttpContext($request, $response);
         
-        foreach($this->config->getRoutes() as $route){
+        foreach($this->configManager->getConfiguration()->getRoutes() as $route){
             if($route->execute($request)){
                 $class = (string)Str::set($route->getServiceClass())->replaceTokens(
                     $request->getParameters()
@@ -37,7 +37,7 @@ final class Application{
                 )->replace('.', '\\');
                     
                 if(Obj::exists($class)){
-                    $service = new $class($this->config);
+                    $service = new $class($this->configManager);
                 }else{
                     throw new ServiceNotFoundException($response, 404, "the service controller not found");
                 }
@@ -55,10 +55,10 @@ final class Application{
     public function error(\Exception $e){
         $exceptionType = get_class($e);
 
-        foreach($this->config->getExceptionHandlers() as $handler){
+        foreach($this->configManager->getExceptionHandlers() as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
-                $service = Obj::create($handler->class, [$this->config])->get();
+                $service = Obj::create($handler->class, [$this->configManager])->get();
 
                 if($service instanceof GenericService){
                     $this->httpContext->getRequest()->setException($e);
