@@ -21,14 +21,13 @@ final class Application{
     private $httpContext = null;
 
     public function run(string $baseDir, ConfigurationManager $configManager){
-        
         $this->configManager = $configManager;
         $server = new Server($baseDir);
         $request = new Request($server);
         $response = new Response($server);
         $this->httpContext = new HttpContext($request, $response);
         
-        foreach($this->configManager->getConfiguration()->getRoutes() as $route){
+        foreach($this->configManager->getConfiguration()->get('routes') as $route){
             if($route->execute($request)){
                 $class = (string)Str::set($route->getServiceClass())->replaceTokens(
                     $request->getParameters()
@@ -55,7 +54,7 @@ final class Application{
     public function error(\Exception $e){
         $exceptionType = get_class($e);
 
-        foreach($this->configManager->getExceptionHandlers() as $handler){
+        foreach($this->configManager->getConfiguration()->get('exceptionHandlers') as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
                 $service = Obj::create($handler->class, [$this->configManager])->get();

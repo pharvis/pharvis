@@ -12,6 +12,10 @@ abstract class GenericService{
         $this->configManager = $configManager;
     }
     
+    public function getConfigurationManager() : ConfigurationManager{
+        return $this->configManager;
+    }
+    
     public function getConfiguration(){
         return $this->configManager->getConfiguration();
     }

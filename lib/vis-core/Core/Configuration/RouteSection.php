@@ -4,9 +4,9 @@ namespace Core\Configuration;
 
 use Core\Web\Routing\Route;
 
-class RouteSection extends ConfigurationSection{
+class RouteSection implements IConfigurationSection{
     
-    public function execute(\SimpleXMLElement $xml){
+    public function execute(Configuration $configuration, \SimpleXMLElement $xml){
         $routes = [];
         
         foreach($xml->xpath('//urlPattern') as $urlPattern){
@@ -21,7 +21,8 @@ class RouteSection extends ConfigurationSection{
             );
         }
         
-        $this->addSection('routes', $routes);
+        $configuration->add('routes', $routes);
+        unset($routes);
     }
 }
 

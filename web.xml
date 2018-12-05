@@ -8,9 +8,16 @@
     <routing>
         
         <route>
-            <class>app.Home</class>
+            <class>app.Controllers.Home</class>
             <urls>
                 <urlPattern>/</urlPattern>
+            </urls>
+        </route>
+        
+        <route>
+            <class>App.Modules.{module}.Controllers.{controller}</class>
+            <urls>
+                <urlPattern>/{module}/{controller}.html</urlPattern>
             </urls>
         </route>
 
@@ -25,10 +32,54 @@
         !-->
     </routing>
     
-    <errorHandlers>
+    <exceptionHandlers>
         <handler>
             <exception>*</exception>
-            <class>Core.Web.Http.ExceptionDispatcher</class>
+            <class>Core.Web.Http.ExceptionService</class>
         </handler>
-    </errorHandlers>
+    </exceptionHandlers>
+    
+    <services>
+        <service name="a">
+            <class>app.A</class>
+        </service>
+        <service name="b">
+            <class>app.B</class>
+            <constructorArg type="ref">a</constructorArg>
+            <constructorArg>user</constructorArg>
+            <constructorArg>pass</constructorArg>
+        </service>
+        <service name="c">
+            <class>app.C</class>
+            <constructorArg type="ref">b</constructorArg>
+            <constructorArg type="property">db3.host</constructorArg>
+        </service>
+    </services>
+    
+    <settings>
+        <section name="db2">
+            <property name="host" value="127.0.0.1" />
+            <property name="user" value="need to override" />
+            <property name="pass" value="need to override" />
+        </section>
+        
+        <section name="db3">
+            <property name="host" value="localhost" />
+            <property name="user" value="need to override" />
+            <property name="pass" value="need to override" />
+        </section>
+    </settings> 
+
+    <viewEngines>
+        <engine default="true">
+            <class>Core.Mvc.NativeViewEngine</class>
+            <locationFormat>~/App/Modules/{module}/Views/{controller}/{action}.php</locationFormat>
+            <locationFormat>~/Views/{controller}/{action}.php</locationFormat>
+        </engine>
+        <engine default="true">
+            <class>Core.Mvc.NativeViewEngine</class>
+            <locationFormat>~/App/Modules/{module}/Views/{controller}/{action}.php</locationFormat>
+            <locationFormat>~/Views/{controller}/{action}.php</locationFormat>
+        </engine>
+    </viewEngines>
 </app>

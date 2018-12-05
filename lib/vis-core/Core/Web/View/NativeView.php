@@ -5,7 +5,7 @@ namespace Core\Web\View;
 class NativeView implements IView{
     
     protected $parentView = null;
-    protected $path = '';
+    protected $viewFile = '';
     protected $childOutput = '';
     protected $methods = null;
     
@@ -14,8 +14,12 @@ class NativeView implements IView{
         $this->methods = new \Core\Common\Arr();
     }
 
-    public function setPath(string $path){
-        $this->path = $path;
+    public function setViewFile(string $viewFile){
+        $this->viewFile = $viewFile;
+    }
+    
+    public function getViewFile() : string{
+        return $this->viewFile;
     }
     
     public function addMethod(string $name, Methods\ViewMethod $method){
@@ -35,9 +39,9 @@ class NativeView implements IView{
     public function render(array $params = []){
         extract($params);
         $output = '';
-        if(is_file($this->path)){
+        if(is_file($this->viewFile)){
             ob_start();
-            include $this->path;
+            include $this->viewFile;
             $output = ob_get_clean();
         }
         

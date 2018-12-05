@@ -3,23 +3,30 @@
 namespace Core\Mvc;
 
 use Core\Common\Obj;
+use Core\Common\Str;
 use Core\Web\Http\GenericService;
 use Core\Web\Http\HttpContext;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
+use Core\Web\View\IView;
+use Core\Mvc\MvcSection;
 
 abstract class Controller extends GenericService{
     
     private $httpContext = null;
     private $request = null;
     private $response = null;
+    private $viewEngines = null;
     
     public function service(HttpContext $httpContext){
+        
+        $this->getConfigurationManager()->handleSection(new MvcSection());
         
         $this->httpContext = $httpContext;
         $this->request = $httpContext->getRequest();
         $this->response = $httpContext->getResponse();
-        
+        $this->viewEngines = $this->getConfiguration()->get('viewEngines');
+
         $collection = $this->request->getCollection();
         $parameters = $this->request->getParameters();
         
@@ -38,6 +45,7 @@ abstract class Controller extends GenericService{
             }else{
                 $actionResult = $result;
             }
+            
             $this->render($actionResult->execute());
         }
     }
@@ -49,10 +57,20 @@ abstract class Controller extends GenericService{
     public function getResponse() : Response{
         return $this->response;
     }
+    
+    public function getViewEngines() : ViewEngineCollection{
+        return $this->viewEngines;
+    }
 
     public function view(array $params = []){
-        $viewResult = new ViewResult($this->httpContext, $params);
-        return $viewResult;
+        foreach($this->viewEngines as $viewEngine){
+            if($viewEngine->getIsDefault()){
+                $view = $viewEngine->findView($this->httpContext);
+                if($view){
+                    return new ViewResult($view, $params);
+                }
+            }
+        }
     }
     
     public function load(){}

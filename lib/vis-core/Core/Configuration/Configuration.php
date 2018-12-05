@@ -6,30 +6,6 @@ final class Configuration{
     
     private $collection = [];
     
-    public function getRoutes(){
-        if($this->exists('routes')){
-            return $this->get('routes');
-        }
-    }
-
-    public function getSettings(){
-        if($this->exists('settings')){
-            return $this->get('settings');
-        }
-    }
-    
-    public function getServiceContainer(){
-        if($this->exists('serviceContainer')){
-            return $this->get('serviceContainer');
-        }
-    }
-    
-    public function getExceptionHandlers(){
-        if($this->exists('exceptionHandlers')){
-            return $this->get('exceptionHandlers');
-        }
-    }
-
     public function add($name, $value){
         if(false === array_key_exists($name, $this->collection)){
             $this->collection[$name] = $value;
@@ -39,13 +15,13 @@ final class Configuration{
     }
     
     public function get($name){
-        return $this->collection[$name];
-    }
-    
-    public function exists(string $name){
-        if(array_key_exists($name, $this->collection)){
+        if($this->exists($name)){
             return $this->collection[$name];
         }
-        throw new ConfigurationException(sprintf("Configuration section '%s' does not exist.", $name));
+        return false;
+    }
+    
+    public function exists(string $name) : bool{
+        return array_key_exists($name, $this->collection);
     }
 }

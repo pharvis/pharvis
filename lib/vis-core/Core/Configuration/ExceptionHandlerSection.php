@@ -2,9 +2,9 @@
 
 namespace Core\Configuration;
 
-class ExceptionHandlerSection extends ConfigurationSection{
+class ExceptionHandlerSection implements IConfigurationSection{
     
-    public function execute(\SimpleXMLElement $xml){
+    public function execute(Configuration $configuration, \SimpleXMLElement $xml){
 
         $exceptionHandlers = [];
         
@@ -12,7 +12,8 @@ class ExceptionHandlerSection extends ConfigurationSection{
             $exceptionHandlers[] = (object)['exception' => (string)$errorHandler->exception, 'class' => (string)$errorHandler->class];
         }
         
-        $this->addSection('exceptionHandlers', $exceptionHandlers);
+        $configuration->add('exceptionHandlers', $exceptionHandlers);
+        unset($exceptionHandlers);
     }
 }
 
