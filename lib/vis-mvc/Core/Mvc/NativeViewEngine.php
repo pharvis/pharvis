@@ -5,32 +5,15 @@ namespace Core\Mvc;
 use Core\Common\Str;
 use Core\Web\View\NativeView;
 
-class NativeViewEngine{
+class NativeViewEngine extends ViewEngine{
     
-    private $locationFormats = [];
-    private $isDefault = false;
-
     public function __construct(){
-        $this->locationFormats = ['~/views/{controller}/{action}.php'];
-    }
-    
-    public function setViewLocationFormats(array $locationFormats){
-        $this->locationFormats = array_merge($this->locationFormats, $locationFormats);
-        return $this;
-    }
-
-    public function setIsDefault(bool $isDefault){
-        $this->isDefault = $isDefault;
-        return $this;
-    }
-    
-    public function getIsDefault() : bool{
-        return $this->isDefault;
+        $this->setViewLocationFormats(['~/views/{controller}/{action}.php']);
     }
 
     public function findView($httpContext){
         
-        foreach($this->locationFormats as $location){
+        foreach($this->getViewLocationFormats() as $location){
             if($location[0] == '~'){
                 $location = $httpContext->getRequest()->getServer()->getBasePath() . (string)Str::set($location)->subString(1);
             }

@@ -70,16 +70,4 @@
         </section>
     </settings> 
 
-    <viewEngines>
-        <engine default="true">
-            <class>Core.Mvc.NativeViewEngine</class>
-            <locationFormat>~/App/Modules/{module}/Views/{controller}/{action}.php</locationFormat>
-            <locationFormat>~/Views/{controller}/{action}.php</locationFormat>
-        </engine>
-        <engine default="true">
-            <class>Core.Mvc.NativeViewEngine</class>
-            <locationFormat>~/App/Modules/{module}/Views/{controller}/{action}.php</locationFormat>
-            <locationFormat>~/Views/{controller}/{action}.php</locationFormat>
-        </engine>
-    </viewEngines>
 </app>

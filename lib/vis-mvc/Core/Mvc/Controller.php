@@ -3,12 +3,11 @@
 namespace Core\Mvc;
 
 use Core\Common\Obj;
-use Core\Common\Str;
+use Core\Web\Http\HttpException;
 use Core\Web\Http\GenericService;
 use Core\Web\Http\HttpContext;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
-use Core\Web\View\IView;
 use Core\Mvc\MvcSection;
 
 abstract class Controller extends GenericService{
@@ -18,7 +17,7 @@ abstract class Controller extends GenericService{
     private $response = null;
     private $viewEngines = null;
     
-    public function service(HttpContext $httpContext){
+    public final function service(HttpContext $httpContext){
         
         $this->getConfigurationManager()->handleSection(new MvcSection());
         
@@ -63,6 +62,11 @@ abstract class Controller extends GenericService{
     }
 
     public function view(array $params = []){
+        
+        if($this->viewEngines->count() == 0){
+            throw new HttpException($this->response, 500, "No ViewEngine registered.");
+        }
+        
         foreach($this->viewEngines as $viewEngine){
             if($viewEngine->getIsDefault()){
                 $view = $viewEngine->findView($this->httpContext);
@@ -71,6 +75,7 @@ abstract class Controller extends GenericService{
                 }
             }
         }
+        
     }
     
     public function load(){}

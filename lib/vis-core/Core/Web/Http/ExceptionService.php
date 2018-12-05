@@ -28,8 +28,7 @@ class ExceptionService extends HttpService{
         $this->handleRequest($httpContext);
     }
     
-    protected function handleRequest(HttpContext $httpContext){ print_R($httpContext->getRequest()->getException()); exit;
+    protected function handleRequest(HttpContext $httpContext){
         $httpContext->getResponse()->write($httpContext->getRequest()->getException()->getMessage());
-        //print_R($httpContext->getRequest()->getException());
     }
 }
