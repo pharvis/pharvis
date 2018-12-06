@@ -2,14 +2,13 @@
 
 $baseDir = str_replace('\\', '/', dirname(__DIR__));
 
-$p = new Phar($baseDir . '/lib/vis-core.phar');
-$p->buildFromDirectory($baseDir . '/lib/vis-core');
-$p->setDefaultStub('index.php', 'index.php');
+$libs = ['vis-core', 'vis-mvc', 'vis-data'];
 
-$p2 = new Phar($baseDir . '/lib/vis-mvc.phar');
-$p2->buildFromDirectory($baseDir . '/lib/vis-mvc');
-$p2->setDefaultStub('index.php', 'index.php');
-
+foreach($libs as $lib){
+    $p = new Phar($baseDir . '/lib/' . $lib . '.phar');
+    $p->buildFromDirectory($baseDir . '/lib/' . $lib);
+    $p->setDefaultStub('index.php', 'index.php');
+}
 
 set_error_handler(function($errno, $errstr, $errfile, $errline ){
     throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
