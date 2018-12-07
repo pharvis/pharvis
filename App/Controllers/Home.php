@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use VisORM\Database;
+use VisORM\EntityManager;
 
 
 class Home extends \Core\Mvc\Controller{
@@ -21,6 +21,10 @@ class Home extends \Core\Mvc\Controller{
 
         $db = new EntityManager('mysql:host=127.0.0.1;dbname=cloud;charset=utf8', 'syed', 'Yellow77');
         
-        $db->getRepository('Models.');
+        $document = $db->find(\Models\Folder::class, 234);
+        
+        foreach($document->getFiles() as $file){
+            print $file;
+        }
     }
 }
