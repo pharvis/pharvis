@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Mvc;
+namespace Core\Mvc\View;
 
 use Core\Common\Str;
 use Core\Web\View\NativeView;
@@ -13,10 +13,10 @@ class NativeViewEngine extends ViewEngine{
 
     public function findView($httpContext){
         
+        $view = new NativeView();
+        $view->setBasePath($httpContext->getRequest()->getServer()->getBasePath());
+        
         foreach($this->getViewLocationFormats() as $location){
-            if($location[0] == '~'){
-                $location = $httpContext->getRequest()->getServer()->getBasePath() . (string)Str::set($location)->subString(1);
-            }
 
             $file = (string)Str::set($location)->replaceTokens(
                 $httpContext->getRequest()->getParameters()
@@ -24,11 +24,9 @@ class NativeViewEngine extends ViewEngine{
                 ->toArray()
             );
                 
-            if(is_file($file)){
-                $view = new NativeView();
-                $view->setViewFile($file);
-                return $view;
-            }
+            $view->setViewFiles($file);
         }
+        
+        return $view;
     }
 }

@@ -10,9 +10,9 @@ use Core\Web\Http\Server;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
 use Core\Web\Http\HttpContext;
-use Core\Web\Http\GenericService;
+use Core\Web\Http\GenericController;
 use Core\Web\Http\HttpException;
-use Core\Web\Http\ServiceNotFoundException;
+use Core\Web\Http\ControllerNotFoundException;
 use Core\Web\Http\HttpConstraintException;
 
 final class Application{
@@ -21,28 +21,29 @@ final class Application{
     private $httpContext = null;
 
     public function run(string $baseDir, ConfigurationManager $configManager){
+        
         $this->configManager = $configManager;
         $server = new Server($baseDir);
         $request = new Request($server);
         $response = new Response($server);
         $this->httpContext = new HttpContext($request, $response);
         
-        foreach($this->configManager->getConfiguration()->get('routes') as $route){
+        foreach($this->configManager->getConfiguration()->get('routes') as $route){ 
             if($route->execute($request)){
                 $class = (string)Str::set($route->getServiceClass())->replaceTokens(
                     $request->getParameters()
                     ->map(function($v){ return (string)Str::set($v)->toUpperFirst(); })
                     ->toArray()
                 )->replace('.', '\\');
-                    
+
                 if(Obj::exists($class)){
-                    $service = new $class($this->configManager);
+                    $controller = new $class($this->configManager);
                 }else{
-                    throw new ServiceNotFoundException($response, 404, "the service controller not found");
+                    throw new ControllerNotFoundException($response, 404, "the service controller not found");
                 }
 
-                if($service instanceof GenericService){
-                    $this->dispatch($service);
+                if($controller instanceof GenericController){
+                    $this->dispatch($controller);
                     break;
                 }else{
                     throw new HttpException($response, 500, "$class must be an instance of GenericService");
@@ -51,25 +52,27 @@ final class Application{
         }
     }
     
-    public function error(\Exception $e){
+    public function error(\Exception $e){  print_R($e); exit;
         $exceptionType = get_class($e);
 
         foreach($this->configManager->getConfiguration()->get('exceptionHandlers') as $handler){
             if($handler->exception == $exceptionType || $handler->exception =='*'){
                 
-                $service = Obj::create($handler->class, [$this->configManager])->get();
+                $class = (string)Str::set($handler->class)->replace('.', '\\');
 
-                if($service instanceof GenericService){
+                $controller = new $class($this->configManager);
+                
+                if($controller instanceof GenericController){
                     $this->httpContext->getRequest()->setException($e);
-                    $this->dispatch($service);
+                    $this->dispatch($controller);
                     break;
                 }
             }
         }
     }
     
-    protected function dispatch(GenericService $service){
-        $annotations = Obj::from($service)->getClassAnnotations();
+    protected function dispatch(GenericController $controller){
+        $annotations = Obj::from($controller)->getClassAnnotations();
 
         foreach($annotations as $annotation) {
             $annotationInstance = Obj::create($annotation->getClassName(), $annotation->getParameters())->get();
@@ -80,7 +83,7 @@ final class Application{
                 }
             }
         }
-        $service->service($this->httpContext);
+        $controller->service($this->httpContext);
         $this->httpContext->getResponse()->flush();
     }
 }

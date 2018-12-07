@@ -4,13 +4,13 @@ namespace Core\Mvc;
 
 use Core\Common\Obj;
 use Core\Web\Http\HttpException;
-use Core\Web\Http\GenericService;
+use Core\Web\Http\GenericController;
 use Core\Web\Http\HttpContext;
 use Core\Web\Http\Request;
 use Core\Web\Http\Response;
 use Core\Mvc\MvcSection;
 
-abstract class Controller extends GenericService{
+abstract class Controller extends GenericController{
     
     private $httpContext = null;
     private $request = null;
@@ -36,7 +36,7 @@ abstract class Controller extends GenericService{
             $result = Obj::from($this)->invokeMethod($action, $collection);
 
             if(!$result instanceof IActionResult){
-                if(is_scalar($result)){
+                if(is_scalar($result) || $result === null){
                     $actionResult = new StringResult($result);
                 }else{
                     $actionResult = new JsonResult($this->response, $result);
@@ -75,7 +75,6 @@ abstract class Controller extends GenericService{
                 }
             }
         }
-        
     }
     
     public function load(){}

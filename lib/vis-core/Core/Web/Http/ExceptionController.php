@@ -2,7 +2,7 @@
 
 namespace Core\Web\Http;
 
-class ExceptionService extends HttpService{
+class ExceptionController extends HttpController{
     
     public function get(HttpContext $httpContext){
         $this->handleRequest($httpContext);

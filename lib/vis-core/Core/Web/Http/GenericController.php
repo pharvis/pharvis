@@ -4,7 +4,7 @@ namespace Core\Web\Http;
 
 use Core\Configuration\ConfigurationManager;
 
-abstract class GenericService{
+abstract class GenericController{
     
     private $configManager = null;
     

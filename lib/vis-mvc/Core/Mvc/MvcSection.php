@@ -5,6 +5,8 @@ namespace Core\Mvc;
 use Core\Common\Obj;
 use Core\Configuration\IConfigurationSection;
 use Core\Configuration\Configuration;
+use Core\Mvc\View\ViewEngineCollection;
+use Core\Mvc\View\NativeViewEngine;
 
 class MvcSection implements IConfigurationSection{
     

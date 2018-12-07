@@ -2,7 +2,7 @@
 
 namespace Core\Web\Http;
 
-abstract class HttpService extends GenericService{
+abstract class HttpController extends GenericController{
     
     public function get(HttpContext $httpContext){}
 

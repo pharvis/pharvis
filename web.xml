@@ -3,39 +3,22 @@
     <dependencies>
         <name path="/var/somethinf">vis-core.phar</name>
         <name path="/var/somethinf">vis-mvc.phar</name>
+        <name path="/var/somethinf">vis-orm.phar</name>
     </dependencies>
     
     <routing>
-        
         <route>
-            <class>app.Controllers.Home</class>
+            <class>App.Controllers.{controller}</class>
             <urls>
-                <urlPattern>/</urlPattern>
+                <urlPattern>/{controller}/{action}</urlPattern>
             </urls>
         </route>
-        
-        <route>
-            <class>App.Modules.{module}.Controllers.{controller}</class>
-            <urls>
-                <urlPattern>/{module}/{controller}.html</urlPattern>
-            </urls>
-        </route>
-
-        <!--
-        <route>
-            <class>app.Home</class>
-            <urls>
-                <urlPattern>/{controller}/product-{product_id}/{id}.html</urlPattern>
-                <urlPattern>/{controller}/product-{product_id}.html</urlPattern>
-            </urls>
-        </route>
-        !-->
     </routing>
     
     <exceptionHandlers>
         <handler>
             <exception>*</exception>
-            <class>Core.Web.Http.ExceptionService</class>
+            <class>Core.Web.Http.ExceptionController</class>
         </handler>
     </exceptionHandlers>
     
@@ -69,5 +52,12 @@
             <property name="pass" value="need to override" />
         </section>
     </settings> 
+    
+    <viewEngines>
+        <engine default="true">
+            <class>Core.Mvc.View.NativeViewEngine</class>
+            <locationFormat>~/App/Views/{controller}/{action}.php</locationFormat>
+        </engine>
+    </viewEngines>
 
 </app>

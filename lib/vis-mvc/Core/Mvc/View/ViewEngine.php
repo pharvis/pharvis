@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Mvc;
+namespace Core\Mvc\View;
 
 abstract class ViewEngine{
     

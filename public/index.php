@@ -2,7 +2,7 @@
 
 $baseDir = str_replace('\\', '/', dirname(__DIR__));
 
-$libs = ['vis-core', 'vis-mvc', 'vis-data'];
+$libs = ['vis-core', 'vis-mvc', 'vis-orm'];
 
 foreach($libs as $lib){
     $p = new Phar($baseDir . '/lib/' . $lib . '.phar');
