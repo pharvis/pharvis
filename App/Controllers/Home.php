@@ -21,6 +21,6 @@ class Home extends \Core\Mvc\Controller{
 
         $db = new EntityManager('mysql:host=127.0.0.1;dbname=cloud;charset=utf8', 'syed', 'Yellow77');
         
-        $db->getRepository('Models.')
+        $db->getRepository('Models.');
     }
 }
